@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/* class-based dark mode: <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────── Ad24x7 design tokens ───────── */
+@theme {
+  --color-brand: #297fb1; /* logo blue – large text, accents */
+  --color-brand-600: #2273a8; /* buttons with white text (AA) */
+  --color-brand-700: #1d6696; /* small blue text on white (AA) */
+  --color-brand-300: #7fc0ea; /* blue text on dark */
+  --color-brand-100: #e8f2f9;
+  --color-ink: #0a0c10;
+  --color-ink-2: #33404d;
+  --color-muted: #4d5866;
+  --color-subtle: #8a96a3;
+  --color-line: #e8edf2;
+  --color-canvas: #f3f4f6;
+  --color-surface: #fafafb;
+  --color-card: #ffffff;   /* card / panel background */
+  --color-field: #f7f9fb;  /* input background */
+  --color-edge: #e1e7ec;   /* input + chip border */
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, sans-serif;
+
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-floor: floor 3s linear infinite;
+  --animate-nav-glow: navglow 4s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes floor {
+    from { background-position: 0 0; }
+    to { background-position: 0 64px; }
+  }
+  @keyframes navglow {
+    0%, 100% { box-shadow: 0 10px 30px rgba(41,127,177,.18), 0 2px 0 rgba(41,127,177,.55); }
+    50% { box-shadow: 0 14px 44px rgba(41,127,177,.32), 0 2px 0 rgba(90,174,224,.9); }
+  }
+}
+
+/* ───────── Dark theme: same token names, night palette ───────── */
+.dark {
+  color-scheme: dark;
+  --color-brand: #4aa3dc;      /* brighter logo blue so it glows on black */
+  --color-brand-700: #7fc0ea;  /* small blue text → light blue on dark (AA) */
+  --color-ink: #f3f6f9;        /* primary text */
+  --color-ink-2: #c4cdd6;
+  --color-muted: #9aa6b2;
+  --color-subtle: #6b7682;
+  --color-line: #1d242d;
+  --color-canvas: #05070a;
+  --color-surface: #0b0e13;
+  --color-card: #0e1218;
+  --color-field: #0a0d12;
+  --color-edge: #252e39;
+}
+
+/* planet ring: strong blue on light backgrounds, pale silver on dark */
+:root { --planet-ring: #2a85bc; --planet-ring-back: .85; }
+.dark { --planet-ring: #e9f4fb; --planet-ring-back: .55; }
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+  }
+  ::selection { background: #297fb1; color: #fff; }
+}
+
+/* perspective grid floor used in hero / CTA / cards */
+.grid-floor {
+  --grid-color: rgba(41,127,177,.16);
+  background-image:
+    linear-gradient(var(--grid-color, rgba(41,127,177,.16)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color, rgba(41,127,177,.16)) 1px, transparent 1px);
+  background-size: var(--grid-size, 64px) var(--grid-size, 64px);
+  transform: rotateX(68deg);
+  transform-origin: bottom;
+  -webkit-mask-image: linear-gradient(transparent, #000 45%);
+  mask-image: linear-gradient(transparent, #000 45%);
+}
+
+.dark .grid-floor { --grid-color: rgba(74,163,220,.24); }
+
+/* hero backdrop: soft blue glow in light, deep space with stars in dark */
+.hero-bg {
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(90,174,224,.20), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 60%, rgba(10,12,16,.05), transparent 70%);
+}
+.dark .hero-bg {
+  background:
+    radial-gradient(ellipse 55% 35% at 50% 100%, rgba(41,127,177,.35), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 88% 45%, rgba(74,163,220,.14), transparent 70%),
+    radial-gradient(ellipse 35% 35% at 10% 45%, rgba(74,163,220,.08), transparent 70%);
+}
+.stars {
+  display: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1px 1px at 22% 42%, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(1.5px 1.5px at 35% 8%, rgba(159,208,238,.9), transparent 60%),
+    radial-gradient(1px 1px at 48% 30%, rgba(255,255,255,.45), transparent 60%),
+    radial-gradient(2px 2px at 66% 14%, rgba(159,208,238,.9), transparent 60%),
+    radial-gradient(1px 1px at 74% 36%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 86% 10%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(1px 1px at 93% 52%, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(1px 1px at 6% 66%, rgba(255,255,255,.4), transparent 60%),
+    radial-gradient(1.5px 1.5px at 58% 56%, rgba(159,208,238,.6), transparent 60%);
+  animation: twinkle 5s ease-in-out infinite alternate;
+}
+.dark .stars { display: block; }
+@keyframes twinkle { from { opacity: .55; } to { opacity: 1; } }
+
+/* "why us" showcase card */
+.showcase-bg {
+  background: radial-gradient(ellipse 70% 60% at 70% 80%, rgba(90,174,224,.22), transparent 70%), #fff;
+}
+.dark .showcase-bg {
+  background: radial-gradient(ellipse 70% 60% at 70% 85%, rgba(41,127,177,.30), transparent 70%), #0e1218;
+}
+
+.glossy-blue {
+  background: linear-gradient(145deg, #8fd0f5, #297fb1 50%, #134a6e);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 12px 24px rgba(29,102,150,.28);
+}
+.glossy-dark {
+  background: linear-gradient(145deg, #4a525c, #0a0c10 55%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.35), 0 12px 24px rgba(10,12,16,.25);
+}
+
+.dark .glossy-dark {
+  background: linear-gradient(145deg, #5a636e, #161b22 55%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.3), 0 0 0 1px rgba(255,255,255,.08), 0 12px 24px rgba(0,0,0,.45);
+}
+
+/* navbar: a light that orbits the whole pill border */
+@property --nav-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.nav-border {
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--nav-angle),
+    transparent 0deg,
+    transparent 230deg,
+    #297fb1 285deg,
+    #7fc0ea 330deg,
+    #ffffff 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: navspin 4.5s linear infinite;
+}
+.nav-border-glow { filter: blur(7px); opacity: .85; }
+@keyframes navspin { to { --nav-angle: 360deg; } }
+
+/* hero headline: rotating word – plain solid brand blue, no gradient clip / glow */
+.shimmer-text { color: var(--color-brand); text-shadow: none; filter: none; }
+
+/* underline that sits under the word and grows/shrinks with it */
+.type-underline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -.02em;
+  height: .055em;
+  min-height: 3px;
+  border-radius: 999px;
+  background: var(--color-brand);
+  animation: underlinepulse 1.2s ease-in-out infinite;
+}
+@keyframes underlinepulse { 50% { opacity: .35; } }
+
+/* "why us" tab progress rail */
+.tab-fill { animation-name: tabfill; animation-timing-function: linear; animation-fill-mode: forwards; }
+@keyframes tabfill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* "why us" fanned card deck */
+.deck-card {
+  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r));
+  transition: transform .7s cubic-bezier(.2, .7, .2, 1), box-shadow .3s;
+}
+.deck:hover .deck-card,
+.deck:focus-within .deck-card {
+  transform: translate(calc(-50% + var(--hx)), calc(-50% + var(--hy))) rotate(var(--hr));
+}
+.deck:hover .deck-card:hover { transform: translate(calc(-50% + var(--hx)), calc(-50% + var(--hy) - 12px)) rotate(0deg); z-index: 10 !important; }
+
+/* story-style segmented progress (why us) */
+.seg-fill { animation: segfill linear forwards; }
+@keyframes segfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
